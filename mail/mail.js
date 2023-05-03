@@ -1,6 +1,7 @@
 const path = require('path')
 const nodemailer = require("nodemailer")
 const adminEmail = "tnvrahmed98@zohomail.in"
+const config = require('config');
 const sendMessageEmail = async (data)=>{
     const {email,fName,lName,mobile , message } = data;
     const output = `
@@ -18,8 +19,8 @@ const sendMessageEmail = async (data)=>{
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-          user: 'contact.crystalcoaching@gmail.com',
-           pass :"#Riku1998*"
+          user: config.get('MAIL_EMAIL'),
+           pass : config.get('MAIL_PASS')
       },
       });
     

@@ -1,11 +1,22 @@
 const mongoose = require('mongoose');
+const {Schema} = mongoose;
 
+const chapterSchema = new Scheam({
+    link : {
+        type : String , 
+        required : true
+    }
+})
 
-const contentSchema = new mongoose.Schema({
-    mail : {type : String ,unique : true},
-    name : {type : String},
-    password : {type : String}
+const subjectSchema = new Schema({
+    name : {
+        type : String ,
+        required : true
+    },
+    chapters : [chapterSchema]
 })
 
 
-module.exports  = mongoose.model("user",userSchema);
+const Subject = mongoose.model("Subject", subjectSchema);
+exports.Subject = Subject;
+
