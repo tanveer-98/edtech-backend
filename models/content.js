@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
-const chapterSchema = new Scheam({
+const chapterSchema = new Schema({
     link : {
         type : String , 
         required : true

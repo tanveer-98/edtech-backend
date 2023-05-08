@@ -32,9 +32,12 @@ userSchema.methods.generateAuthToken = function () {
   return jwt.sign(
     {
       id: this._id,
-      isAdmin: this.isAdmin,
+      isAdmin: this.isAdmin, 
     },
-    config.get("SECRET_KEY")
+    config.get("SECRET_KEY"),
+    {
+      expiresIn : "1hr"
+    }
   );
 };
 

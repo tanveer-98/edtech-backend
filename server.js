@@ -8,8 +8,10 @@ const hagen = require('hagen').default;
 const chalk = require('chalk');
 require('./db/db');
 
-
+const auth = require('./routes/auth');
 const users = require('./routes/users');
+const notice = require('./routes/notice');
+
 const app = express();
 
 app.use(function(req,res, next){
@@ -25,7 +27,12 @@ app.use(function(req,res, next){
 app.use(express.json());
 app.use(cors());
 
+
+
 app.use('/api/users', users);
+app.use('/api/auth', auth);
+app.use('/api/notice', notice);
+
 
 if (!config.get('SECRET_KEY')) {
   hagen.error('JWTError', 'FATAL ERROR: jwtPrivateKey is not defined.');
