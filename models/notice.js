@@ -13,14 +13,21 @@ const autoIncrement = require('mongoose-auto-increment');
 
 const noticeSchema = new Schema({
     id : {
-        type : Number
+        type : Number,
+        default : 0
     },
 
     notice : {
         type : String ,
         required : true,
         trim : true
+    },
+    isDeleted : {
+      type : Boolean , 
+      default : false
     }
+},{
+  versionKey:"0"
 })
 const Notice = mongoose.model("notice", noticeSchema);
 
@@ -44,7 +51,7 @@ const Notice = mongoose.model("notice", noticeSchema);
 //     next();
 // })
 
-function validateUser(notice) {
+function validateNotice(notice) {
     const schema = Joi.object({
       notice: Joi.string().min(5).max(50).required(),
     });
@@ -54,5 +61,5 @@ function validateUser(notice) {
   
 
 exports.Notice = Notice;
-exports.validate = validateUser;
+exports.validate = validateNotice;
 
