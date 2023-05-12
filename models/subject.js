@@ -35,6 +35,10 @@ const subjectSchema = new Schema(
       unique: true
     },
     chapters: [chapterSchema],
+    isDeleted:{
+      type : Boolean ,
+      default : false 
+    }
   },
   {
     versionKey: 0,

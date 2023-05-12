@@ -63,7 +63,7 @@ router.post("/:subjectid/chapter", async (req, res) => {
     const topIndex = findSubject.chapters.length;
 
     findSubject.chapters.push({
-      id : topIndex + 1,
+      id: topIndex + 1,
       name: title,
       link: dlink,
     });
@@ -79,9 +79,12 @@ router.post("/:subjectid/chapter", async (req, res) => {
       );
       console.log(updated);
 
+      const all = await Subject.find({}, { "chapters._id": 0, _id: 0 });
+
       return res.status(404).send({
+        docs: all,
         response: true,
-        message: "Message not found",
+        message: "Successfully Added Chapter",
       });
     } catch (err) {
       return res.status(400).send({
@@ -89,50 +92,55 @@ router.post("/:subjectid/chapter", async (req, res) => {
       });
     }
   }
-
-  console.log(subjectId);
-
-  if (Object.keys(req.body).length == 0)
-    return res.status(400).send({
-      error: "Request Body cannot be empty",
-    });
-
-  return res.send({
-    response: true,
-    message: "Successfully Added Chapter",
-  });
 });
 
 // update Chapter
 
-router.patch("/:id/chapter", async (req, res) => {
+router.patch("/:subjectId/chapter/:chapterid", async (req, res) => {
   if (Object.keys(req.body).length == 0)
     return res.status(400).send({
       error: "Request Body cannot be empty",
     });
   // chapter must have a title and dlink
   const { title, dlink } = req.body;
-  const subjectId = req.params.subjectid;
+  const { subjectId, chapterid } = req.params;
+  console.log(subjectId)
+  const chapters = await Subject.find({id : subjectId});
+  console.log("CHAPTERS");
+  console.log(chapters)
 
-  let findSubject = await Subject.findOneAndUpdate({ id: subjectId },{
-    ...req.body
-  }, {new : true});
+  const filterchapters = chapters.filter((chapter) => chapter.id != chapterid);
 
+   filterchapters.push({
+    id : chapterid,
+    name : title  ,
+    link : dlink
+  })
+  console.log(filterchapters)
+ try {
+   const updatedSubject = await Subject.findOneAndUpdate({
+      id : subjectId
+   },{
+    chapters  : filterchapters
+ 
+   }, {new : true})
+   console.log(updatedSubject)
+   const all = await Subject.find({}, { "chapters._id": 0, _id: 0 });
 
+   return res.status(200).send({
+    response : true,
+    docs : all ,
+    message : "Successfully updated chapter Details"
+    
+   })
 
-
-
-
-
-
-
-
-
-
-  return res.send({
-    response: true,
-    message: "Successfully Added Chapter",
+ }
+ catch(err){
+  return res.status(400).send({
+    response : false, 
+    message: err.message,
   });
+ }
 });
 
 router.delete("/", async (req, res) => {});
