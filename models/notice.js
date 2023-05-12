@@ -14,7 +14,8 @@ const autoIncrement = require('mongoose-auto-increment');
 const noticeSchema = new Schema({
     id : {
         type : Number,
-        default : 0
+        default : 0,
+        unique : true
     },
 
     notice : {
