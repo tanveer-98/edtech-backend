@@ -60,8 +60,10 @@ router.post("/:subjectid/chapter", async (req, res) => {
     // console.log(typeof subjectId)
     console.log(findSubject);
     console.log(findSubject.chapters);
+    const topIndex = findSubject.chapters.length;
 
     findSubject.chapters.push({
+      id : topIndex + 1,
       name: title,
       link: dlink,
     });
@@ -116,7 +118,9 @@ router.patch("/:id/chapter", async (req, res) => {
     ...req.body
   }, {new : true});
 
-  
+
+
+
 
 
 
