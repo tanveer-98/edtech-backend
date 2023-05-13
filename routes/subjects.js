@@ -104,43 +104,51 @@ router.patch("/:subjectId/chapter/:chapterid", async (req, res) => {
   // chapter must have a title and dlink
   const { title, dlink } = req.body;
   const { subjectId, chapterid } = req.params;
-  console.log(subjectId)
-  const chapters = await Subject.find({id : subjectId});
-  console.log("CHAPTERS");
-  console.log(chapters)
+  console.log(subjectId);
+  
+  try {
+    const subject = await Subject.findOne({ id: subjectId });
+    console.log(subject);
+  const chapters = subject.chapters;
 
-  const filterchapters = chapters.filter((chapter) => chapter.id != chapterid);
+  console.log(chapters);
 
-   filterchapters.push({
-    id : chapterid,
-    name : title  ,
-    link : dlink
-  })
-  console.log(filterchapters)
- try {
-   const updatedSubject = await Subject.findOneAndUpdate({
-      id : subjectId
-   },{
-    chapters  : filterchapters
- 
-   }, {new : true})
-   console.log(updatedSubject)
-   const all = await Subject.find({}, { "chapters._id": 0, _id: 0 });
+  console.log("Chapter ID: " + chapterid);
 
-   return res.status(200).send({
-    response : true,
-    docs : all ,
-    message : "Successfully updated chapter Details"
-    
-   })
+  const filterchapters = chapters?.filter((chapter) => chapter.id != chapterid);
+  
+  console.log("FILTER CHAPTERS: ");
+  console.log(filterchapters )
 
- }
- catch(err){
-  return res.status(400).send({
-    response : false, 
-    message: err.message,
+  filterchapters.push({
+    id: chapterid,
+    name: title,
+    link: dlink,
   });
- }
+  filterchapters.sort(function(a, b){return a.id - b.id});
+  console.log(filterchapters);
+    const updatedSubject = await Subject.findOneAndUpdate(
+      {
+        id: subjectId,
+      },
+      {
+        chapters: filterchapters,
+      },
+      { new: true }
+    );
+    console.log(updatedSubject);
+    const all = await Subject.find({}, { "chapters._id": 0, _id: 0 });
+    return res.status(200).send({
+      response: true,
+      docs: all,
+      message: "Successfully updated chapter Details",
+    });
+  } catch (err) {
+    return res.status(400).send({
+      response: false,
+      message: err.message,
+    });
+  }
 });
 
 router.delete("/", async (req, res) => {});
