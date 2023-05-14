@@ -54,7 +54,7 @@ router.post("/update/:id", async (req, res) => {
       message: "Not found",
     });
 
-  r
+
 
 
   
@@ -101,12 +101,14 @@ router.get("/", async (req, res) => {
   if (all.length == 0) {
     return res.status(404).send({
       response: false,
+      message : "Not found",
       docs: [],
     });
   } else {
     return res.status(200).send({
       response: true,
       docs: all,
+      message : "Successfully Fetched"
     });
   }
 });
