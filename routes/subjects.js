@@ -105,28 +105,32 @@ router.patch("/:subjectId/chapter/:chapterid", async (req, res) => {
   const { title, dlink } = req.body;
   const { subjectId, chapterid } = req.params;
   console.log(subjectId);
-  
+
   try {
     const subject = await Subject.findOne({ id: subjectId });
     console.log(subject);
-  const chapters = subject.chapters;
+    const chapters = subject.chapters;
 
-  console.log(chapters);
+    console.log(chapters);
 
-  console.log("Chapter ID: " + chapterid);
+    console.log("Chapter ID: " + chapterid);
 
-  const filterchapters = chapters?.filter((chapter) => chapter.id != chapterid);
-  
-  console.log("FILTER CHAPTERS: ");
-  console.log(filterchapters )
+    const filterchapters = chapters?.filter(
+      (chapter) => chapter.id != chapterid
+    );
 
-  filterchapters.push({
-    id: chapterid,
-    name: title,
-    link: dlink,
-  });
-  filterchapters.sort(function(a, b){return a.id - b.id});
-  console.log(filterchapters);
+    console.log("FILTER CHAPTERS: ");
+    console.log(filterchapters);
+
+    filterchapters.push({
+      id: chapterid,
+      name: title,
+      link: dlink,
+    });
+    filterchapters.sort(function (a, b) {
+      return a.id - b.id;
+    });
+    console.log(filterchapters);
     const updatedSubject = await Subject.findOneAndUpdate(
       {
         id: subjectId,
@@ -151,8 +155,58 @@ router.patch("/:subjectId/chapter/:chapterid", async (req, res) => {
   }
 });
 
-router.delete("/", async (req, res) => {});
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params.id;
 
-router.get("/", async (req, res) => {});
+  if (id === undefined || id == null) {
+    return res.status(200).send({
+      response: false,
+      message: "Something went wrong , unable to delete",
+    });
+  }
+
+  try {
+    const updated = await Subject.findOneAndUpdate(
+      {
+        id: id,
+      },
+      {
+        isDeleted: true,
+      }
+    );
+
+    const all = await Subject.find({});
+
+    return res.status(200).send({
+      response: true,
+      message: "Successfully delete Subject",
+      docs: all,
+    });
+  } catch (err) {
+    return res.status(200).send({
+      response: false,
+      message: "Something went wrong",
+    });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try{
+    const all = await Subject.find({});
+    return res.status(200).send({
+      response : true ,
+      message : "Successfully fetched results",
+      docs : all
+    })
+  }
+  catch(err){
+    return res.status(404).send({
+      response : false , 
+      docs : [],
+      message : "No content found "
+    })
+  }
+
+});
 
 module.exports = router;
